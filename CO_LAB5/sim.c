@@ -34,7 +34,10 @@ void setParameter(int argc, char** argv, Cache *cache)
     }
     cache->cache_size = atoi(argv[1])<<10;
     cache->block_size = atoi(argv[2]);
-    cache->asso = (strcmp(argv[3], "f") == 0)?cache->block_size:atoi(argv[3]);
+    /* setting block */
+    cache->blockNum = cache->cache_size / cache->block_size;
+    cache->block = (Block*)malloc(sizeof(Block)*(cache->blockNum+1));
+    cache->asso = (strcmp(argv[3], "f") == 0)?cache->blockNum:atoi(argv[3]);
     if(strcmp(argv[4], "FIFO") == 0)
         cache->policy = 0;
     else if(strcmp(argv[4], "LRU") == 0)
@@ -45,9 +48,6 @@ void setParameter(int argc, char** argv, Cache *cache)
         exit(1);
     }
     cache->file = argv[5];
-    /* setting block */
-    cache->blockNum = cache->cache_size / cache->block_size;
-    cache->block = (Block*)malloc(sizeof(Block)*(cache->blockNum+1));
     cache->setsNum = cache->blockNum / cache->asso;
     return;
 }
